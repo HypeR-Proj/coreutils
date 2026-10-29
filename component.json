@@ -72,7 +72,17 @@
   "SPDX-FileCopyrightText": "2026 roolrz",
   "SPDX-License-Identifier": "Apache-2.0",
   "mounts": {
-    "": "app"
+    "cat": "app/cat",
+    "chmod": "app/chmod",
+    "cp": "app/cp",
+    "echo": "app/echo",
+    "ln": "app/ln",
+    "ls": "app/ls",
+    "mkdir": "app/mkdir",
+    "mv": "app/mv",
+    "rm": "app/rm",
+    "rmdir": "app/rmdir",
+    "touch": "app/touch"
   },
   "packages": [
     "hyper-cat",
@@ -143,5 +153,179 @@
       "app-test",
       "APP_TEST_PACKAGE=hyper-touch"
     ]
-  ]
+  ],
+  "local_workspace": true,
+  "cargo_context": {
+    "cat/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "chmod/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "cp/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "/dependencies/hyper-os": {
+          "workspace": true,
+          "features": [
+            "std"
+          ]
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "echo/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "ln/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "ls/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "mkdir/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "mv/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "rm/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "rmdir/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    },
+    "touch/Cargo.toml": {
+      "workspace": null,
+      "membership": "..",
+      "dependency_paths": {
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": "lib/clap"
+      },
+      "inherited_dependencies": {
+        "/dependencies/clap": {
+          "workspace": true
+        },
+        "target.cfg(target_os = \"hyper\")/dependencies/hyper-clap-shared": {
+          "workspace": true
+        }
+      }
+    }
+  }
 }
