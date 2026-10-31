@@ -77,5 +77,233 @@
       "app-test",
       "APP_TEST_PACKAGE=hyper-touch"
     ]
-  ]
+  ],
+  "cargo": [
+    {
+      "manifest": "cat/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "chmod/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "cp/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "echo/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "ln/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "ls/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "mkdir/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "mv/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "rm/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "rmdir/Cargo.toml",
+      "domain": "system"
+    },
+    {
+      "manifest": "touch/Cargo.toml",
+      "domain": "system"
+    }
+  ],
+  "artifacts": [
+    {
+      "binary": "hyper-cat",
+      "staged": "cat",
+      "destination": "bin/cat",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "cat/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-chmod",
+      "staged": "chmod",
+      "destination": "bin/chmod",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "chmod/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-cp",
+      "staged": "cp",
+      "destination": "bin/cp",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "cp/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-echo",
+      "staged": "echo",
+      "destination": "bin/echo",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "echo/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-ln",
+      "staged": "ln",
+      "destination": "bin/ln",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "ln/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-ls",
+      "staged": "ls",
+      "destination": "bin/ls",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "ls/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-mkdir",
+      "staged": "mkdir",
+      "destination": "bin/mkdir",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "mkdir/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-mv",
+      "staged": "mv",
+      "destination": "bin/mv",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "mv/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-rm",
+      "staged": "rm",
+      "destination": "bin/rm",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "rm/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-rmdir",
+      "staged": "rmdir",
+      "destination": "bin/rmdir",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "rmdir/Cargo.toml",
+      "enabled": true
+    },
+    {
+      "binary": "hyper-touch",
+      "staged": "touch",
+      "destination": "bin/touch",
+      "mode": "0755",
+      "profiles": [
+        "development"
+      ],
+      "rust_runtime": "std",
+      "environment": "system",
+      "manifest": "touch/Cargo.toml",
+      "enabled": true
+    }
+  ],
+  "build": {
+    "requires": [
+      "toolchain"
+    ],
+    "actions": {
+      "all": [
+        [
+          "python3",
+          "{workspace}/scripts/build-native-module.py",
+          "--module",
+          "{module}",
+          "--action",
+          "{action}"
+        ]
+      ],
+      "build": [
+        [
+          "python3",
+          "{workspace}/scripts/build-native-module.py",
+          "--module",
+          "{module}",
+          "--action",
+          "{action}"
+        ]
+      ],
+      "check": [
+        [
+          "python3",
+          "{workspace}/scripts/build-native-module.py",
+          "--module",
+          "{module}",
+          "--action",
+          "{action}"
+        ]
+      ]
+    }
+  }
 }
