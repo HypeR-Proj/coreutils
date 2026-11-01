@@ -4,8 +4,6 @@
 //! External echo using standard argument parsing and output.
 
 // Select the shared parser implementation for Native delivery.
-#[cfg(target_os = "hyper")]
-extern crate hyper_clap_shared as _;
 
 use clap::Parser;
 use std::io::{self, Write};
@@ -26,3 +24,6 @@ fn main() -> std::process::ExitCode {
         }
     }
 }
+
+#[cfg(target_os = "hyper")]
+extern crate hyper_clap_shared as clap;

@@ -74,3 +74,6 @@ pub fn mode_text(mode: u32, directory: bool, symlink: bool) -> String {
 #[cfg(test)]
 #[path = "../tests/format.rs"]
 mod tests;
+
+#[cfg(target_os = "hyper")]
+extern crate hyper_clap_shared as clap;

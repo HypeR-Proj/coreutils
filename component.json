@@ -4,23 +4,6 @@
   "version": 1,
   "name": "coreutils",
   "kind": "application",
-  "origin": {
-    "repository": "https://github.com/roolrz/HypeR",
-    "commit": "8d42d047058a2b58a291803700e86487fb723f7a"
-  },
-  "packages": [
-    "hyper-cat",
-    "hyper-chmod",
-    "hyper-cp",
-    "hyper-echo",
-    "hyper-ln",
-    "hyper-ls",
-    "hyper-mkdir",
-    "hyper-mv",
-    "hyper-rm",
-    "hyper-rmdir",
-    "hyper-touch"
-  ],
   "tests": [
     [
       "make",
@@ -270,40 +253,9 @@
     }
   ],
   "build": {
+    "type": "native-rust",
     "requires": [
       "toolchain"
-    ],
-    "actions": {
-      "all": [
-        [
-          "python3",
-          "{workspace}/scripts/build-native-module.py",
-          "--module",
-          "{module}",
-          "--action",
-          "{action}"
-        ]
-      ],
-      "build": [
-        [
-          "python3",
-          "{workspace}/scripts/build-native-module.py",
-          "--module",
-          "{module}",
-          "--action",
-          "{action}"
-        ]
-      ],
-      "check": [
-        [
-          "python3",
-          "{workspace}/scripts/build-native-module.py",
-          "--module",
-          "{module}",
-          "--action",
-          "{action}"
-        ]
-      ]
-    }
+    ]
   }
 }
