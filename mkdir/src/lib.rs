@@ -71,3 +71,6 @@ pub fn run(args: Args) -> bool {
 #[cfg(test)]
 #[path = "../tests/operations.rs"]
 mod tests;
+
+#[cfg(target_os = "hyper")]
+extern crate hyper_clap_shared as clap;

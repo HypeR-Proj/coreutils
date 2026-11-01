@@ -5,19 +5,15 @@ bin = [{name = "hyper-mkdir", path = "src/main.rs", test = false, bench = false}
 
 [package]
 name = "hyper-mkdir"
-version = "0.0.0"
+version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
 repository = "https://github.com/HypeR-Proj/coreutils"
 publish = false
 autotests = false
-workspace = "../.."
+workspace = ".."
 
 [dependencies]
-
-[dependencies.clap]
-workspace = true
-features = ["derive"]
 
 [lints]
 
@@ -47,4 +43,14 @@ check-cfg = ["cfg(target_os, values(\"hyper\"))"]
 [target."cfg(target_os = \"hyper\")".dependencies]
 
 [target."cfg(target_os = \"hyper\")".dependencies.hyper-clap-shared]
-workspace = true
+path = "../../../lib/clap"
+default-features = false
+features = ["derive"]
+
+[target."cfg(not(target_os = \"hyper\"))"]
+
+[target."cfg(not(target_os = \"hyper\"))".dependencies]
+
+[target."cfg(not(target_os = \"hyper\"))".dependencies.clap]
+version = "=4.6.6"
+features = ["derive"]

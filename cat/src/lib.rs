@@ -61,3 +61,6 @@ impl Lines {
 #[cfg(test)]
 #[path = "../tests/stream.rs"]
 mod tests;
+
+#[cfg(target_os = "hyper")]
+extern crate hyper_clap_shared as clap;

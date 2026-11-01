@@ -80,3 +80,6 @@ fn escaped(bytes: &[u8], output: &mut impl Write) -> io::Result<bool> {
 #[cfg(test)]
 #[path = "../tests/output.rs"]
 mod tests;
+
+#[cfg(target_os = "hyper")]
+extern crate hyper_clap_shared as clap;

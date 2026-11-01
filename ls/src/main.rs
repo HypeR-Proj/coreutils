@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Select the shared parser implementation for Native delivery.
-#[cfg(target_os = "hyper")]
-extern crate hyper_clap_shared as _;
 
 use clap::Parser;
 use hyper_ls::cli::Ls;
@@ -51,3 +49,6 @@ fn main() -> ExitCode {
         }
     }
 }
+
+#[cfg(target_os = "hyper")]
+extern crate hyper_clap_shared as clap;
