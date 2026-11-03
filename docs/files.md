@@ -36,6 +36,12 @@ nested symbolic links; an explicitly named symbolic link changes its target.
 Recursive `cp` preserves symbolic links, including dangling links. It refuses
 existing destination symlinks, same-file copies (including hard links), and
 copying a directory into itself. Regular destination files are overwritten unless `-n` is selected.
+When a preserved source link replaces a regular destination file, `cp` prepares
+the new link beside the destination and publishes it by rename. Unsupported link
+creation or replacement fails without first deleting the old file. This requires
+filesystem replace-by-rename support; there is no destructive unlink fallback.
+Existing destination directories are not replaced by links, and `-n` skips all
+existing destination entries for a source link, including dangling links.
 `ln` refuses existing link names. `mv` uses filesystem rename and reports
 cross-filesystem moves as unsupported by that operation; it does not silently
 fall back to a non-atomic copy/delete sequence. Recursive `rm` does not follow
