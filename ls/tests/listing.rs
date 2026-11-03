@@ -46,16 +46,19 @@ fn one_unavailable_child_preserves_the_rest_of_every_sorted_listing() -> io::Res
         unavailable.metadata = Err(io::Error::other("filesystem backend unavailable"));
         let mut output = Vec::new();
         let mut errors = Vec::new();
-        assert!(write_entries(
-            vec![
-                directory.entry("healthy"),
-                unavailable,
-                directory.entry("bin"),
-            ],
-            &args,
-            &mut output,
-            &mut errors,
-        )?);
+        assert_eq!(
+            write_entries(
+                vec![
+                    directory.entry("healthy"),
+                    unavailable,
+                    directory.entry("bin"),
+                ],
+                &args,
+                &mut output,
+                &mut errors,
+            )?,
+            ListingOutcome::PartialFailure
+        );
         let output = String::from_utf8_lossy(&output);
         assert!(output.lines().any(|line| line.ends_with("  bin/")));
         assert!(output.lines().any(|line| line.ends_with("  healthy")));
@@ -82,12 +85,15 @@ fn lost_symlink_target_does_not_hide_subsequent_entries() -> io::Result<()> {
     fs::remove_file(&alias.path)?;
     let mut output = Vec::new();
     let mut errors = Vec::new();
-    assert!(write_entries(
-        vec![alias, directory.entry("healthy")],
-        &Ls::parse_from(["ls"]),
-        &mut output,
-        &mut errors,
-    )?);
+    assert_eq!(
+        write_entries(
+            vec![alias, directory.entry("healthy")],
+            &Ls::parse_from(["ls"]),
+            &mut output,
+            &mut errors,
+        )?,
+        ListingOutcome::PartialFailure
+    );
     let output = String::from_utf8_lossy(&output);
     assert!(output.contains("alias@ -> ?"));
     assert!(output.lines().any(|line| line.ends_with("  healthy")));

@@ -5,11 +5,12 @@
 
 use clap::Parser;
 use hyper_ls::cli::Ls;
+use hyper_ls::listing::ListingOutcome;
 use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-fn run() -> io::Result<bool> {
+fn run() -> io::Result<ExitCode> {
     let mut args = Ls::parse();
     if args.paths.is_empty() {
         args.paths.push(PathBuf::from("."));
@@ -25,7 +26,8 @@ fn run() -> io::Result<bool> {
             writeln!(output, "{}:", path.display())?;
         }
         match hyper_ls::listing::list(path, &args, &mut output, &mut errors) {
-            Ok(partial_failure) => failed |= partial_failure,
+            Ok(ListingOutcome::Complete) => {}
+            Ok(ListingOutcome::PartialFailure) => failed = true,
             Err(error) => {
                 if error.kind() == io::ErrorKind::BrokenPipe {
                     return Err(error);
@@ -36,13 +38,16 @@ fn run() -> io::Result<bool> {
         }
     }
     output.flush()?;
-    Ok(failed)
+    Ok(if failed {
+        ExitCode::FAILURE
+    } else {
+        ExitCode::SUCCESS
+    })
 }
 
 fn main() -> ExitCode {
     match run() {
-        Ok(false) => ExitCode::SUCCESS,
-        Ok(true) => ExitCode::FAILURE,
+        Ok(status) => status,
         Err(error) => {
             eprintln!("ls: {error}");
             ExitCode::FAILURE
