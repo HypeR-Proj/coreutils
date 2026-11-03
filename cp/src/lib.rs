@@ -7,6 +7,7 @@ use std::os::hyper::fs::{MetadataExt, symlink};
 #[cfg(unix)]
 use std::os::unix::fs::{MetadataExt, symlink};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::{fs, io};
 
 #[derive(Debug, Default, Parser)]
@@ -134,6 +135,42 @@ fn copy_regular(
     Ok(true)
 }
 
+fn replace_with_link(link: &Path, target: &Path) -> io::Result<()> {
+    static NEXT: AtomicU64 = AtomicU64::new(0);
+    let parent = target
+        .parent()
+        .filter(|path| !path.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
+    // Prepare before publication: unsupported symlinks or replacement must not
+    // delete the old destination. Rename changes the entry, never its referent.
+    for _ in 0..32 {
+        let temporary = parent.join(format!(
+            ".cp-link-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        match symlink(link, &temporary) {
+            Ok(()) => {}
+            Err(error) if error.kind() == io::ErrorKind::AlreadyExists => continue,
+            Err(error) => return Err(error),
+        }
+        let result = fs::rename(&temporary, target);
+        if result.is_err()
+            && let Err(error) = fs::remove_file(&temporary)
+        {
+            return Err(io::Error::new(
+                error.kind(),
+                format!(
+                    "replacement failed; cannot remove {}: {error}",
+                    temporary.display()
+                ),
+            ));
+        }
+        return result;
+    }
+    Err(io::Error::other("cannot create a temporary copy link"))
+}
+
 pub fn copy(
     source: &Path,
     target: &Path,
@@ -174,7 +211,16 @@ pub fn copy(
             return Err(io::Error::other("source and destination are the same file"));
         }
         if metadata.file_type().is_symlink() {
-            match symlink(fs::read_link(&source)?, &target) {
+            let link = fs::read_link(&source)?;
+            let result = if let Some(destination) = &destination {
+                if !destination.is_file() {
+                    return Err(io::Error::other("destination is not a regular file"));
+                }
+                replace_with_link(&link, &target)
+            } else {
+                symlink(link, &target)
+            };
+            match result {
                 Err(error)
                     if options.no_clobber && error.kind() == io::ErrorKind::AlreadyExists =>
                 {

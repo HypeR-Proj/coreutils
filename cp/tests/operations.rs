@@ -4,6 +4,78 @@
 use super::*;
 
 #[test]
+fn recursive_link_copy_replaces_regular_entry_without_modifying_its_inode() -> io::Result<()> {
+    let d = Directory::new()?;
+    fs::write(d.path("target"), b"old contents")?;
+    fs::hard_link(d.path("target"), d.path("old-alias"))?;
+    fs::write(d.path("referent"), b"untouched referent")?;
+    symlink("referent", d.path("source"))?;
+    let options = CopyOptions {
+        recursive: true,
+        verbose: true,
+        ..CopyOptions::default()
+    };
+    let mut output = Vec::new();
+    copy(&d.path("source"), &d.path("target"), &options, &mut output)?;
+    assert_eq!(fs::read_link(d.path("target"))?, Path::new("referent"));
+    assert_eq!(fs::read(d.path("old-alias"))?, b"old contents");
+    assert_eq!(fs::read(d.path("referent"))?, b"untouched referent");
+    assert_eq!(output.iter().filter(|byte| **byte == b'\n').count(), 1);
+    Ok(())
+}
+
+#[test]
+fn recursive_link_overwrite_preserves_skip_and_refusal_policies() -> io::Result<()> {
+    let d = Directory::new()?;
+    symlink("missing", d.path("source"))?;
+    fs::write(d.path("file"), b"keep")?;
+    fs::create_dir(d.path("directory"))?;
+    fs::write(d.path("directory/child"), b"keep child")?;
+    symlink("file", d.path("link"))?;
+    symlink("absent", d.path("dangling"))?;
+    let mut options = CopyOptions {
+        recursive: true,
+        no_clobber: true,
+        verbose: true,
+    };
+    let mut output = Vec::new();
+    for target in ["file", "directory", "link", "dangling", "source"] {
+        copy(&d.path("source"), &d.path(target), &options, &mut output)?;
+    }
+    assert!(output.is_empty());
+    assert_eq!(fs::read(d.path("file"))?, b"keep");
+    options.no_clobber = false;
+    for target in ["directory", "link", "dangling", "source"] {
+        assert!(copy(&d.path("source"), &d.path(target), &options, &mut output).is_err());
+    }
+    assert_eq!(fs::read(d.path("directory/child"))?, b"keep child");
+    assert_eq!(fs::read_link(d.path("link"))?, Path::new("file"));
+    assert_eq!(fs::read_link(d.path("dangling"))?, Path::new("absent"));
+    assert_eq!(fs::read_link(d.path("source"))?, Path::new("missing"));
+    assert_eq!(fs::read(d.path("file"))?, b"keep");
+    assert!(!d.path("missing").exists());
+    assert!(!d.path("absent").exists());
+    copy(&d.path("source"), &d.path("file"), &options, &mut output)?;
+    assert_eq!(fs::read_link(d.path("file"))?, Path::new("missing"));
+    Ok(())
+}
+
+#[test]
+fn link_preparation_and_publication_failures_preserve_destination() -> io::Result<()> {
+    let d = Directory::new()?;
+    fs::write(d.path("file"), b"keep")?;
+    fs::create_dir(d.path("directory"))?;
+    fs::write(d.path("directory/child"), b"keep child")?;
+    let oversized = "x".repeat(65_536);
+    assert!(replace_with_link(Path::new(&oversized), &d.path("file")).is_err());
+    assert!(replace_with_link(Path::new("missing"), &d.path("directory")).is_err());
+    assert_eq!(fs::read(d.path("file"))?, b"keep");
+    assert_eq!(fs::read(d.path("directory/child"))?, b"keep child");
+    assert_eq!(fs::read_dir(&d.0)?.count(), 2);
+    Ok(())
+}
+
+#[test]
 fn no_clobber_preserves_files_and_dangling_links_and_merges_directories() -> io::Result<()> {
     let d = Directory::new()?;
     fs::create_dir(d.path("source"))?;
