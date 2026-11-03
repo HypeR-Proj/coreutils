@@ -16,7 +16,13 @@ struct Entry {
     metadata: io::Result<Metadata>,
 }
 
-/// Lists available children and returns true when any entry could not be read.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ListingOutcome {
+    Complete,
+    PartialFailure,
+}
+
+/// Lists available children while distinguishing complete and partial output.
 ///
 /// A child can disappear or belong to a failed mounted filesystem after its
 /// name was enumerated. Preserve that name without inventing attributes; the
@@ -26,7 +32,7 @@ pub fn list(
     args: &Ls,
     output: &mut impl Write,
     errors: &mut impl Write,
-) -> io::Result<bool> {
+) -> io::Result<ListingOutcome> {
     let metadata = fs::symlink_metadata(path)?;
     let mut entries = Vec::new();
     let mut failed = false;
@@ -57,7 +63,12 @@ pub fn list(
             metadata: Ok(metadata),
         });
     }
-    Ok(write_entries(entries, args, output, errors)? || failed)
+    let outcome = write_entries(entries, args, output, errors)?;
+    Ok(if failed {
+        ListingOutcome::PartialFailure
+    } else {
+        outcome
+    })
 }
 
 fn diagnostic(errors: &mut impl Write, path: &Path, error: &io::Error) -> io::Result<()> {
@@ -73,7 +84,7 @@ fn write_entries(
     args: &Ls,
     output: &mut impl Write,
     errors: &mut impl Write,
-) -> io::Result<bool> {
+) -> io::Result<ListingOutcome> {
     let mut failed = false;
     let sort = if args.newest {
         Sort::Time
@@ -174,7 +185,11 @@ fn write_entries(
             )?;
         }
     }
-    Ok(failed)
+    Ok(if failed {
+        ListingOutcome::PartialFailure
+    } else {
+        ListingOutcome::Complete
+    })
 }
 
 #[cfg(test)]
