@@ -5,19 +5,48 @@ SPDX-License-Identifier: Apache-2.0
 
 # coreutils
 
-A HypeR component. See [HypeR](https://github.com/HypeR-Proj/HypeR) for
-workspace setup and the installed SDK build boundary.
+Small filesystem and stream utilities for Native userspace.
 
-## Workspace tests
+The repository contains cat, chmod, cp, echo, ln, ls, mkdir, mv, rm, rmdir and touch.
+Each command has its own Cargo package; component.json owns the delivered executables.
+Filesystem access uses the Native Rust standard-library port and the caller’s namespace.
 
-Use the [HypeR workspace](https://github.com/HypeR-Proj/HypeR) to resolve dependencies:
+See the [implementation entry](component.json) and [component declaration](component.json)
+for the public interfaces, build dependencies and delivered artifacts.
+
+## Usage
+
+In a Native session with the required capabilities:
 
 ```sh
-python3 project.py test coreutils
+ls /system/bin
+cat /etc/fstab
+cp --help
 ```
 
-Paths in the documentation are relative to the repo-managed workspace root.
-Edit this repository and prepare the workspace again before building.
+## Boundaries
+
+These are the implemented HypeR utilities, not a claim of complete GNU coreutils
+compatibility. Consult each command’s help. Partial listing failures preserve successful
+output and return failure; copying symlinks follows the documented overwrite/no-clobber
+behavior.
+
+## Build and test
+
+Use this checkout inside the [repo-managed workspace](https://github.com/HypeR-Proj/HypeR).
+From this repository directory:
+
+```sh
+make
+make test
+```
+
+An absolute `OUT=/path/to/out` selects a shared output directory. The module
+entry delegates to build/system, which prepares the installed SDK and declared
+dependencies. Native binaries require HypeR; host module checks cover the tests
+selected by component.json. A standalone clone does not contain the workspace’s
+other source repositories or Native SDK.
+
 
 `ls` preserves readable entries when a child disappears or its backing service
 fails. Such partial listings report diagnostics and exit with status 1; complete
